@@ -74,6 +74,10 @@ defmodule Sketch.Runner do
         %{type: :scale, sx: sx, sy: sy} ->
           :wxGraphicsContext.scale(context, sx, sy)
 
+        %{type: :reset_matrix} ->
+          matrix = :wxGraphicsContext.createMatrix(context)
+          :wxGraphicsContext.setTransform(context, matrix)
+
         shape ->
           Sketch.Primitives.Render.render_wx(shape, context)
       end

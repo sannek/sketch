@@ -25,6 +25,9 @@ defmodule Sketch.Render.Png do
           %{type: :scale, sx: sx, sy: sy} ->
             {image, [{:scale, {sx, sy}} | transforms]}
 
+          %{type: :reset_matrix} ->
+            {image, []}
+
           shape ->
             {Sketch.Primitives.Render.render_png(shape, image, transforms), transforms}
         end

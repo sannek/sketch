@@ -34,16 +34,34 @@ defmodule Sketch do
     }
   end
 
+  @doc """
+  Open a window to show the drawn sketch (using wxWidgets)
+  """
   def run(%Sketch{} = sketch) do
     Sketch.Runner.start_link(sketch)
   end
 
-  def example() do
+  def save(%Sketch{} = sketch) do
+    image =
+      %Mogrify.Image{path: "#{sketch.title}.png", ext: "png"}
+      |> Mogrify.custom("size", "#{sketch.width}x#{sketch.height}")
+      |> Mogrify.canvas("#FFFFFF")
+      |> Mogrify.custom("fill", "white")
+      |> Mogrify.custom("stroke", "red")
+
+    complete =
+      Enum.reduce(sketch.order, image, fn id, image ->
+        Map.get(sketch.primitives, id) |> Sketch.Primitives.Render.render_png(image)
+      end)
+
+    Mogrify.create(complete, path: ".")
+  end
+
+  def example do
     Sketch.new()
     |> Sketch.line(%{start: {0, 0}, finish: {100, 100}})
     |> Sketch.rect(%{origin: {40, 40}, width: 30, height: 30})
     |> Sketch.square(%{origin: {100, 100}, size: 50})
-    |> Sketch.run()
   end
 
   @doc """

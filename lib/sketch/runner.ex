@@ -58,7 +58,7 @@ defmodule Sketch.Runner do
     order
     |> Enum.reverse()
     |> Enum.each(fn id ->
-      Map.get(primitives, id) |> IO.inspect() |> Sketch.Render.render_wx(context)
+      Map.get(primitives, id) |> IO.inspect() |> Sketch.Primitives.Render.render_wx(context)
     end)
   end
 

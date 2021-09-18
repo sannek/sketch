@@ -1,5 +1,7 @@
 # Sketch
 
+Saving a sketch as a png requires [ImageMagick](https://imagemagick.org/script/index.php) to be installed on your machine!
+
 **TODO: Add description**
 
 ## Installation

@@ -38,9 +38,16 @@ defmodule Sketch.Primitives.Rect do
   end
 end
 
-defimpl Sketch.Render, for: Sketch.Primitives.Rect do
+defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Rect do
   def render_wx(rect, wx_context) do
     {x, y} = rect.origin
     :wxGraphicsContext.drawRectangle(wx_context, x, y, rect.width, rect.height)
+  end
+
+  def render_png(%{origin: {x, y}, width: w, height: h}, image) do
+    opts = to_string(:io_lib.format("~g,~g ~g,~g", [x / 1, y / 1, (x + w) / 1, (y + h) / 1]))
+
+    image
+    |> Mogrify.custom("draw", "rectangle #{opts}")
   end
 end

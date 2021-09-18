@@ -36,12 +36,22 @@ defmodule Sketch.Primitives.Line do
   end
 end
 
-defimpl Sketch.Render, for: Sketch.Primitives.Line do
+defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Line do
   def render_wx(line, wx_context) do
     # Line accepts floats so we need to convert
     %{start: {startX, startY}, finish: {finishX, finishY}} = line
     start = {startX / 1, startY / 1}
     finish = {finishX / 1, finishY / 1}
     :wxGraphicsContext.drawLines(wx_context, [start, finish])
+  end
+
+  def render_png(line, image) do
+    %{start: {startX, startY}, finish: {finishX, finishY}} = line
+
+    opts =
+      to_string(:io_lib.format("~g,~g ~g,~g", [startX / 1, startY / 1, finishX / 1, finishY / 1]))
+
+    image
+    |> Mogrify.custom("draw", "line #{opts}")
   end
 end

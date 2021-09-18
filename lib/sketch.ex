@@ -23,6 +23,12 @@ defmodule Sketch do
     add_shape(sketch, line)
   end
 
+  def rect(%Sketch{} = sketch, params) do
+    rect = Sketch.Primitives.Rect.new(params)
+
+    add_shape(sketch, rect)
+  end
+
   def add_shape(sketch, shape) do
     primitives = Map.put_new(sketch.primitives, shape.id, shape)
     order = [shape.id | sketch.order]

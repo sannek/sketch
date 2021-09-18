@@ -9,8 +9,8 @@ defmodule Sketch.Primitives.Square do
           size: number()
         }
 
-  def new(%{origin: origin, size: size}) do
-    %__MODULE__{origin: origin, size: size, id: "square-#{:rand.uniform(100)}"}
+  def new(%{origin: origin, size: size, id: id}) do
+    %__MODULE__{origin: origin, size: size, id: id}
   end
 
   def verify!(params) do

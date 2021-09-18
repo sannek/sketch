@@ -12,8 +12,8 @@ defmodule Sketch.Primitives.Rect do
           height: number()
         }
 
-  def new(%{origin: origin, width: width, height: height}) do
-    %__MODULE__{origin: origin, width: width, height: height, id: "rect-#{:rand.uniform(100)}"}
+  def new(%{origin: origin, width: width, height: height, id: id}) do
+    %__MODULE__{origin: origin, width: width, height: height, id: id}
   end
 
   def verify!(params) do

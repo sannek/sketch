@@ -11,7 +11,7 @@ defmodule Sketch.Primitives.Line do
 
   def new(params) do
     data = verify!(params)
-    %__MODULE__{start: data.start, finish: data.finish, id: "line-#{:rand.uniform(100)}"}
+    %__MODULE__{start: data.start, finish: data.finish, id: params.id}
   end
 
   def verify!(params) do

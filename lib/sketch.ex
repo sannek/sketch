@@ -2,17 +2,17 @@ defmodule Sketch do
   defstruct title: "Sketch",
             width: 800,
             height: 600,
-            background: {255, 255, 255},
             primitives: %{},
-            order: []
+            order: [],
+            background: Sketch.Color.new({255, 255, 255})
 
   @type t :: %Sketch{
           title: String.t(),
           width: number,
           height: number,
-          background: {integer, integer, integer},
+          background: Sketch.Color.t(),
           primitives: map,
-          order: list
+          order: [integer()]
         }
 
   @type coordinates :: {number, number}
@@ -26,11 +26,13 @@ defmodule Sketch do
   """
   @spec new(opts :: list) :: Sketch.t()
   def new(opts \\ []) do
+    background = Keyword.get(opts, :background, {255, 255, 255}) |> Sketch.Color.new()
+
     %__MODULE__{
       title: Keyword.get(opts, :title, "Sketch"),
       width: Keyword.get(opts, :width, 800),
-      height: Keyword.get(opts, :width, 600),
-      background: Keyword.get(opts, :background, {255, 255, 255})
+      height: Keyword.get(opts, :height, 600),
+      background: background
     }
   end
 
@@ -45,22 +47,30 @@ defmodule Sketch do
     image =
       %Mogrify.Image{path: "#{sketch.title}.png", ext: "png"}
       |> Mogrify.custom("size", "#{sketch.width}x#{sketch.height}")
-      |> Mogrify.canvas("#FFFFFF")
-      |> Mogrify.custom("fill", "white")
-      |> Mogrify.custom("stroke", "red")
+      |> Mogrify.canvas(Sketch.Color.to_hex(sketch.background))
+      |> Mogrify.custom("stroke", "black")
 
     complete =
-      Enum.reduce(sketch.order, image, fn id, image ->
-        Map.get(sketch.primitives, id) |> Sketch.Primitives.Render.render_png(image)
+      Enum.reverse(sketch.order)
+      |> Enum.reduce(image, fn id, image ->
+        case Map.get(sketch.primitives, id) do
+          %{type: :fill, color: color} ->
+            Mogrify.custom(image, "fill", Sketch.Color.to_hex(color))
+
+          shape ->
+            Sketch.Primitives.Render.render_png(shape, image)
+        end
       end)
 
     Mogrify.create(complete, path: ".")
   end
 
   def example do
-    Sketch.new()
+    Sketch.new(background: {165, 122, 222})
     |> Sketch.line(%{start: {0, 0}, finish: {100, 100}})
+    |> Sketch.set_fill({200, 120, 0})
     |> Sketch.rect(%{origin: {40, 40}, width: 30, height: 30})
+    |> Sketch.set_fill({0, 120, 255})
     |> Sketch.square(%{origin: {100, 100}, size: 50})
   end
 
@@ -69,7 +79,7 @@ defmodule Sketch do
   """
   @spec line(Sketch.t(), %{start: coordinates(), finish: coordinates()}) :: Sketch.t()
   def line(%Sketch{} = sketch, params) do
-    line = Sketch.Primitives.Line.new(params)
+    line = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Line.new()
 
     add_shape(sketch, line)
   end
@@ -79,8 +89,8 @@ defmodule Sketch do
   """
   @spec rect(Sketch.t(), %{origin: coordinates(), width: integer(), height: integer()}) ::
           Sketch.t()
-  def rect(%Sketch{} = sketch, params) do
-    rect = Sketch.Primitives.Rect.new(params)
+  def rect(sketch, params) do
+    rect = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Rect.new()
 
     add_shape(sketch, rect)
   end
@@ -89,10 +99,10 @@ defmodule Sketch do
   Add a square to a sketch. This is not meaningfullly different from adding a rectangle with the same width and height,
   but is a convenience function for readability.
   """
-  @spec rect(Sketch.t(), %{origin: coordinates(), size: integer()}) ::
+  @spec square(Sketch.t(), %{origin: coordinates(), size: integer()}) ::
           Sketch.t()
   def square(%Sketch{} = sketch, params) do
-    square = Sketch.Primitives.Square.new(params)
+    square = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Square.new()
 
     add_shape(sketch, square)
   end
@@ -107,5 +117,16 @@ defmodule Sketch do
     primitives = Map.put_new(sketch.primitives, shape.id, shape)
     order = [shape.id | sketch.order]
     %{sketch | primitives: primitives, order: order}
+  end
+
+  def set_fill(sketch, {_r, _g, _b} = col) do
+    fill = %{type: :fill, color: Sketch.Color.new(col), id: next_id(sketch)}
+    add_shape(sketch, fill)
+  end
+
+  defp next_id(%{order: []}), do: 1
+
+  defp next_id(%{order: [prev | _]}) do
+    prev + 1
   end
 end

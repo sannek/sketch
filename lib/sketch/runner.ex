@@ -39,26 +39,35 @@ defmodule Sketch.Runner do
     context = :wxGraphicsContext.create(dc)
 
     # Set Background
-    bg_brush = :wxBrush.new(sketch.background)
+    bg_brush = :wxBrush.new(Sketch.Color.to_tuple(sketch.background))
+    brush = :wxBrush.new({255, 255, 255})
 
     :wxPaintDC.setBackground(dc, bg_brush)
     :wxPaintDC.clear(dc)
 
-    pen = :wxPen.new({255, 0, 0}, width: 2)
+    pen = :wxPen.new({50, 0, 0}, width: 2)
     :wxGraphicsContext.setPen(context, pen)
+    :wxGraphicsContext.setBrush(context, brush)
 
-    draw_shapes(context, sketch)
+    do_draw(context, sketch, %{pen: pen, brush: brush})
 
     :wxPaintDC.destroy(dc)
 
     :ok
   end
 
-  defp draw_shapes(context, %{order: order, primitives: primitives}) do
+  defp do_draw(context, %{order: order, primitives: primitives}, %{brush: brush}) do
     order
     |> Enum.reverse()
     |> Enum.each(fn id ->
-      Map.get(primitives, id) |> IO.inspect() |> Sketch.Primitives.Render.render_wx(context)
+      case Map.get(primitives, id) do
+        %{type: :fill, color: color} ->
+          :wxBrush.setColour(brush, Sketch.Color.to_tuple(color))
+          :wxGraphicsContext.setBrush(context, brush)
+
+        shape ->
+          Sketch.Primitives.Render.render_wx(shape, context)
+      end
     end)
   end
 

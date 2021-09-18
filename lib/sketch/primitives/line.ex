@@ -47,12 +47,13 @@ defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Line do
 
   def render_png(line, image, transforms) do
     %{start: {startX, startY}, finish: {finishX, finishY}} = line
-    {dx, dy} = Keyword.get(transforms, :translate, {0, 0})
 
-    opts =
+    line_opts =
       to_string(:io_lib.format("~g,~g ~g,~g", [startX / 1, startY / 1, finishX / 1, finishY / 1]))
 
+    transform_opts = Sketch.Render.Png.build_transform_opts(transforms)
+
     image
-    |> Mogrify.custom("draw", "translate #{dx},#{dy} line #{opts}")
+    |> Mogrify.custom("draw", "#{transform_opts} line #{line_opts}")
   end
 end

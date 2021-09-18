@@ -45,10 +45,12 @@ defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Rect do
   end
 
   def render_png(%{origin: {x, y}, width: w, height: h}, image, transforms) do
-    {dx, dy} = Keyword.get(transforms, :translate, {0, 0})
-    opts = to_string(:io_lib.format("~g,~g ~g,~g", [x / 1, y / 1, (x + w) / 1, (y + h) / 1]))
+    rectangle_opts =
+      to_string(:io_lib.format("~g,~g ~g,~g", [x / 1, y / 1, (x + w) / 1, (y + h) / 1]))
+
+    transform_opts = Sketch.Render.Png.build_transform_opts(transforms)
 
     image
-    |> Mogrify.custom("draw", "translate #{dx},#{dy} rectangle #{opts}")
+    |> Mogrify.custom("draw", "#{transform_opts} rectangle #{rectangle_opts}")
   end
 end

@@ -16,7 +16,7 @@ defmodule Sketch do
         }
 
   @type coordinates :: {number, number}
-
+  @type radians :: float
   @moduledoc """
 
   """
@@ -54,6 +54,9 @@ defmodule Sketch do
     |> Sketch.rect(%{origin: {40, 40}, width: 30, height: 30})
     |> Sketch.translate(50, 50)
     |> Sketch.set_fill({0, 120, 255})
+    |> Sketch.square(%{origin: {0, 0}, size: 50})
+    |> Sketch.set_fill({30, 50, 89})
+    |> Sketch.rotate(0.5)
     |> Sketch.square(%{origin: {0, 0}, size: 50})
   end
 
@@ -116,6 +119,17 @@ defmodule Sketch do
     }
 
     add_item(sketch, translate)
+  end
+
+  @spec rotate(Sketch.t(), radians()) :: Sketch.t()
+  def rotate(sketch, angle) do
+    rotate = %{
+      type: :rotate,
+      angle: angle,
+      id: next_id(sketch)
+    }
+
+    add_item(sketch, rotate)
   end
 
   defp next_id(%{order: []}), do: 1

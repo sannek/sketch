@@ -42,10 +42,12 @@ defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Square do
   end
 
   def render_png(%{origin: {x, y}, size: s}, image, transforms) do
-    {dx, dy} = Keyword.get(transforms, :translate, {0, 0})
-    opts = to_string(:io_lib.format("~g,~g ~g,~g", [x / 1, y / 1, (x + s) / 1, (y + s) / 1]))
+    square_opts =
+      to_string(:io_lib.format("~g,~g ~g,~g", [x / 1, y / 1, (x + s) / 1, (y + s) / 1]))
+
+    transform_opts = Sketch.Render.Png.build_transform_opts(transforms)
 
     image
-    |> Mogrify.custom("draw", "translate #{dx},#{dy} rectangle #{opts}")
+    |> Mogrify.custom("draw", "#{transform_opts} rectangle #{square_opts}")
   end
 end

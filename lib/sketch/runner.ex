@@ -68,6 +68,9 @@ defmodule Sketch.Runner do
         %{type: :translate, dx: dx, dy: dy} ->
           :wxGraphicsContext.translate(context, dx, dy)
 
+        %{type: :rotate, angle: angle} ->
+          :wxGraphicsContext.rotate(context, angle)
+
         shape ->
           Sketch.Primitives.Render.render_wx(shape, context)
       end

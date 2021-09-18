@@ -56,14 +56,17 @@ defmodule Sketch.Runner do
     :ok
   end
 
-  defp do_draw(context, %{order: order, primitives: primitives}, %{brush: brush}) do
+  defp do_draw(context, %{order: order, items: items}, %{brush: brush}) do
     order
     |> Enum.reverse()
     |> Enum.each(fn id ->
-      case Map.get(primitives, id) do
+      case Map.get(items, id) do
         %{type: :fill, color: color} ->
           :wxBrush.setColour(brush, Sketch.Color.to_tuple(color))
           :wxGraphicsContext.setBrush(context, brush)
+
+        %{type: :translate, dx: dx, dy: dy} ->
+          :wxGraphicsContext.translate(context, dx, dy)
 
         shape ->
           Sketch.Primitives.Render.render_wx(shape, context)

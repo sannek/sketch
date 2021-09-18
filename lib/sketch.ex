@@ -2,7 +2,7 @@ defmodule Sketch do
   defstruct title: "Sketch",
             width: 800,
             height: 600,
-            primitives: %{},
+            items: %{},
             order: [],
             background: Sketch.Color.new({255, 255, 255})
 
@@ -11,7 +11,7 @@ defmodule Sketch do
           width: number,
           height: number,
           background: Sketch.Color.t(),
-          primitives: map,
+          items: map,
           order: [integer()]
         }
 
@@ -43,6 +43,7 @@ defmodule Sketch do
     Sketch.Runner.start_link(sketch)
   end
 
+  @spec save(Sketch.t()) :: %{:dirty => %{}, :operations => [], optional(any) => any}
   def save(%Sketch{} = sketch) do
     image =
       %Mogrify.Image{path: "#{sketch.title}.png", ext: "png"}
@@ -53,16 +54,28 @@ defmodule Sketch do
     complete =
       Enum.reverse(sketch.order)
       |> Enum.reduce(image, fn id, image ->
-        case Map.get(sketch.primitives, id) do
+        case Map.get(sketch.items, id) do
           %{type: :fill, color: color} ->
             Mogrify.custom(image, "fill", Sketch.Color.to_hex(color))
+
+          %{type: :translate, dx: dx, dy: dy} ->
+            Mogrify.custom(image, "draw", "translate #{dx},#{dy}")
 
           shape ->
             Sketch.Primitives.Render.render_png(shape, image)
         end
       end)
 
-    Mogrify.create(complete, path: ".")
+    try do
+      Mogrify.create(complete, path: ".")
+    rescue
+      e in RuntimeError ->
+        if String.match?(e.message, ~r/missing prerequisite/) do
+          raise "It seems like you don't have ImageMagick installed. Try installing it with `brew install imagemagick`"
+        else
+          raise e
+        end
+    end
   end
 
   def example do
@@ -70,6 +83,7 @@ defmodule Sketch do
     |> Sketch.line(%{start: {0, 0}, finish: {100, 100}})
     |> Sketch.set_fill({200, 120, 0})
     |> Sketch.rect(%{origin: {40, 40}, width: 30, height: 30})
+    |> Sketch.translate(500, 500)
     |> Sketch.set_fill({0, 120, 255})
     |> Sketch.square(%{origin: {100, 100}, size: 50})
   end
@@ -81,7 +95,7 @@ defmodule Sketch do
   def line(%Sketch{} = sketch, params) do
     line = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Line.new()
 
-    add_shape(sketch, line)
+    add_item(sketch, line)
   end
 
   @doc """
@@ -92,7 +106,7 @@ defmodule Sketch do
   def rect(sketch, params) do
     rect = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Rect.new()
 
-    add_shape(sketch, rect)
+    add_item(sketch, rect)
   end
 
   @doc """
@@ -104,7 +118,7 @@ defmodule Sketch do
   def square(%Sketch{} = sketch, params) do
     square = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Square.new()
 
-    add_shape(sketch, square)
+    add_item(sketch, square)
   end
 
   @doc """
@@ -113,15 +127,26 @@ defmodule Sketch do
 
   Note: custom shapes should Just Work™️, as long as they have an `:id` key, and implement the `Sketch.Render` protocol
   """
-  def add_shape(sketch, shape) do
-    primitives = Map.put_new(sketch.primitives, shape.id, shape)
-    order = [shape.id | sketch.order]
-    %{sketch | primitives: primitives, order: order}
+  def add_item(sketch, item) do
+    items = Map.put_new(sketch.items, item.id, item)
+    order = [item.id | sketch.order]
+    %{sketch | items: items, order: order}
   end
 
   def set_fill(sketch, {_r, _g, _b} = col) do
     fill = %{type: :fill, color: Sketch.Color.new(col), id: next_id(sketch)}
-    add_shape(sketch, fill)
+    add_item(sketch, fill)
+  end
+
+  def translate(sketch, dx, dy) do
+    translate = %{
+      type: :translate,
+      dx: dx,
+      dy: dy,
+      id: next_id(sketch)
+    }
+
+    add_item(sketch, translate)
   end
 
   defp next_id(%{order: []}), do: 1

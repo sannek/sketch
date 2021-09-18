@@ -57,6 +57,7 @@ defmodule Sketch do
     |> Sketch.square(%{origin: {0, 0}, size: 50})
     |> Sketch.set_fill({30, 50, 89})
     |> Sketch.rotate(0.5)
+    |> Sketch.scale(1.5)
     |> Sketch.square(%{origin: {0, 0}, size: 50})
   end
 
@@ -130,6 +131,15 @@ defmodule Sketch do
     }
 
     add_item(sketch, rotate)
+  end
+
+  def scale(sketch, xy_scale) do
+    scale(sketch, xy_scale, xy_scale)
+  end
+
+  def scale(sketch, sx, sy) do
+    scale_props = %{type: :scale, sx: sx, sy: sy, id: next_id(sketch)}
+    add_item(sketch, scale_props)
   end
 
   defp next_id(%{order: []}), do: 1

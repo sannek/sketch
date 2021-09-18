@@ -22,6 +22,9 @@ defmodule Sketch.Render.Png do
             angle_deg = angle * 180 / :math.pi()
             {image, [{:rotate, angle_deg} | transforms]}
 
+          %{type: :scale, sx: sx, sy: sy} ->
+            {image, [{:scale, {sx, sy}} | transforms]}
+
           shape ->
             {Sketch.Primitives.Render.render_png(shape, image, transforms), transforms}
         end
@@ -35,6 +38,7 @@ defmodule Sketch.Render.Png do
     |> Enum.map(fn
       {:rotate, angle} -> "rotate #{angle}"
       {:translate, {dx, dy}} -> "translate #{dx},#{dy}"
+      {:scale, {sx, sy}} -> "scale #{sx},#{sy}"
     end)
     |> Enum.join(" ")
   end

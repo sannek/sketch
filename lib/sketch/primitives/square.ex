@@ -1,8 +1,37 @@
 defmodule Sketch.Primitives.Square do
-  defstruct [:id, origin: {0.0, 0.0}, size: 10.0]
+  alias Sketch.Primitives.Error
+  defstruct [:id, :origin, :size]
+
+  @type coordinates :: {number, number}
+  @type t :: %__MODULE__{
+          id: any,
+          origin: coordinates(),
+          size: number()
+        }
 
   def new(%{origin: origin, size: size}) do
     %__MODULE__{origin: origin, size: size, id: "square-#{:rand.uniform(100)}"}
+  end
+
+  def verify!(params) do
+    case verify(params) do
+      {:ok, data} -> data
+      err -> raise Error, message: info(params), err: err, data: params
+    end
+  end
+
+  def verify(%{origin: {x, y}, size: s} = data)
+      when is_number(x) and is_number(y) and is_number(s) do
+    {:ok, data}
+  end
+
+  def verify(_), do: :invalid_data
+
+  def info(data) do
+    """
+    #{__MODULE__} params should be: %{origin: {x, y}, size: s}, where x, y, and s are numbers.
+    Received: #{inspect(data)}
+    """
   end
 end
 

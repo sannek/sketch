@@ -1,8 +1,38 @@
 defmodule Sketch.Primitives.Line do
-  defstruct [:id, start: {0, 0}, finish: {10, 10}]
+  alias Sketch.Primitives.Error
+  defstruct [:id, :start, :finish]
+  @type coordinates :: {number(), number()}
 
-  def new(%{start: start, finish: finish}) do
-    %__MODULE__{start: start, finish: finish, id: "line-#{:rand.uniform(100)}"}
+  @type t :: %__MODULE__{
+          id: any,
+          start: coordinates(),
+          finish: coordinates()
+        }
+
+  def new(params) do
+    data = verify!(params)
+    %__MODULE__{start: data.start, finish: data.finish, id: "line-#{:rand.uniform(100)}"}
+  end
+
+  def verify!(params) do
+    case verify(params) do
+      {:ok, data} -> data
+      err -> raise Error, message: info(params), err: err, data: params
+    end
+  end
+
+  def verify(%{start: {sx, sy}, finish: {fx, fy}} = data)
+      when is_number(sx) and is_number(sy) and is_number(fx) and is_number(fy) do
+    {:ok, data}
+  end
+
+  def verify(_), do: :invalid_data
+
+  def info(data) do
+    """
+    #{__MODULE__} params should be: %{start: {x, y}, finish: {x, y}}, where all x and y are numbers.
+    Received: #{inspect(data)}
+    """
   end
 end
 

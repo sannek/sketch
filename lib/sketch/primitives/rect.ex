@@ -44,10 +44,13 @@ defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Rect do
     :wxGraphicsContext.drawRectangle(wx_context, x, y, rect.width, rect.height)
   end
 
-  def render_png(%{origin: {x, y}, width: w, height: h}, image) do
-    opts = to_string(:io_lib.format("~g,~g ~g,~g", [x / 1, y / 1, (x + w) / 1, (y + h) / 1]))
+  def render_png(%{origin: {x, y}, width: w, height: h}, image, transforms) do
+    rectangle_opts =
+      to_string(:io_lib.format("~g,~g ~g,~g", [x / 1, y / 1, (x + w) / 1, (y + h) / 1]))
+
+    transform_opts = Sketch.Render.Png.build_transform_opts(transforms)
 
     image
-    |> Mogrify.custom("draw", "rectangle #{opts}")
+    |> Mogrify.custom("draw", "#{transform_opts} rectangle #{rectangle_opts}")
   end
 end

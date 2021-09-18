@@ -43,39 +43,8 @@ defmodule Sketch do
     Sketch.Runner.start_link(sketch)
   end
 
-  @spec save(Sketch.t()) :: %{:dirty => %{}, :operations => [], optional(any) => any}
   def save(%Sketch{} = sketch) do
-    image =
-      %Mogrify.Image{path: "#{sketch.title}.png", ext: "png"}
-      |> Mogrify.custom("size", "#{sketch.width}x#{sketch.height}")
-      |> Mogrify.canvas(Sketch.Color.to_hex(sketch.background))
-      |> Mogrify.custom("stroke", "black")
-
-    complete =
-      Enum.reverse(sketch.order)
-      |> Enum.reduce(image, fn id, image ->
-        case Map.get(sketch.items, id) do
-          %{type: :fill, color: color} ->
-            Mogrify.custom(image, "fill", Sketch.Color.to_hex(color))
-
-          %{type: :translate, dx: dx, dy: dy} ->
-            Mogrify.custom(image, "draw", "translate #{dx},#{dy}")
-
-          shape ->
-            Sketch.Primitives.Render.render_png(shape, image)
-        end
-      end)
-
-    try do
-      Mogrify.create(complete, path: ".")
-    rescue
-      e in RuntimeError ->
-        if String.match?(e.message, ~r/missing prerequisite/) do
-          raise "It seems like you don't have ImageMagick installed. Try installing it with `brew install imagemagick`"
-        else
-          raise e
-        end
-    end
+    Sketch.Render.Png.render(sketch)
   end
 
   def example do
@@ -83,9 +52,9 @@ defmodule Sketch do
     |> Sketch.line(%{start: {0, 0}, finish: {100, 100}})
     |> Sketch.set_fill({200, 120, 0})
     |> Sketch.rect(%{origin: {40, 40}, width: 30, height: 30})
-    |> Sketch.translate(500, 500)
+    |> Sketch.translate(50, 50)
     |> Sketch.set_fill({0, 120, 255})
-    |> Sketch.square(%{origin: {100, 100}, size: 50})
+    |> Sketch.square(%{origin: {0, 0}, size: 50})
   end
 
   @doc """

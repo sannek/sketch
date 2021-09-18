@@ -41,10 +41,11 @@ defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Square do
     :wxGraphicsContext.drawRectangle(wx_context, x, y, square.size, square.size)
   end
 
-  def render_png(%{origin: {x, y}, size: s}, image) do
+  def render_png(%{origin: {x, y}, size: s}, image, transforms) do
+    {dx, dy} = Keyword.get(transforms, :translate, {0, 0})
     opts = to_string(:io_lib.format("~g,~g ~g,~g", [x / 1, y / 1, (x + s) / 1, (y + s) / 1]))
 
     image
-    |> Mogrify.custom("draw", "rectangle #{opts}")
+    |> Mogrify.custom("draw", "translate #{dx},#{dy} rectangle #{opts}")
   end
 end

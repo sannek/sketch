@@ -65,9 +65,15 @@ defmodule Sketch do
 
   @doc """
   Save current sketch as png (requires ImageMagick to be installed locally)
+
+  ## Options
+  * `:timestamp` - whether or not the current timestamp should be affixed to the filename. Defaults to `true`, useful
+  for sketches with random elements that do not produce the same output ever time. If `false` each save will overwrite
+  the previous sketch
+
   """
-  def save(%Sketch{} = sketch) do
-    Sketch.Render.Png.render(sketch)
+  def save(%Sketch{} = sketch, opts \\ []) do
+    Sketch.Render.Png.render(sketch, opts)
   end
 
   def example do

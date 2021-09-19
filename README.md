@@ -18,6 +18,12 @@ This one would look even cooler with higher detail, but I hit the limit of what 
 ![Barnsley Fern](barnsley_fern.png)
 
 
+### Other
+
+Generated with `Examples.candy_dots(6) |> Sketch.save()`
+
+![Candy coloured dots laid out in a grid](candy_dots.png)
+
 ## Usage
 
 Currently Sketch is not yet available on Hex, but to give it a try you can install it directly from this repo.
@@ -77,6 +83,7 @@ Sketch.new()
 ## Features
 
 A brief overview of features that are available so far, and ones that you might expect from a drawing library, that are not yet implemented.
+
 ### General
 
 - [x] Sketch size
@@ -134,11 +141,10 @@ Thinking beyond this hackathon, there are many things that could (should) probab
 
 - [ ] Animation!
 - [ ] Text
-- [ ] Math and Random helper modules (simple wrappers & maybe some nice noise implementations?)
-- [ ] Allow setting random seeds and persisting those so screen/png are the same result
+- [ ] Math and Random helper modules
+- [ ] Random seeds and persisting those so screen/png are the same result
 - [ ] Interaction??
-
-- [ ] More graceful / supervised starting of the wx object when calling `Sketch.run/1`
+- [ ] More graceful starting of the wx object when calling `Sketch.run/1`
 - [ ] Test coverage
 - [ ] Data validation for creating primitives
 - [ ] Friendly errors

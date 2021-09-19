@@ -23,6 +23,50 @@ defmodule Examples do
     |> add_fern_points(detail)
   end
 
+  def candy_dots(count \\ 5) do
+    new(width: 600, height: 600, title: "tiles", background: {255, 255, 255})
+    |> no_stroke()
+    |> add_tiles(count)
+  end
+
+  defp add_tiles(sketch, count) do
+    margin = min(sketch.width, sketch.height) / 10
+    tile_width = (sketch.width - 2 * margin) / count
+    tile_height = (sketch.height - 2 * margin) / count
+
+    for i <- 0..(count - 1), j <- 0..(count - 1), reduce: sketch do
+      sketch ->
+        sketch
+        |> reset_matrix()
+        |> translate({i * tile_width + margin, j * tile_height + margin})
+        |> add_tile({tile_width, tile_height})
+    end
+  end
+
+  defp add_tile(sketch, {w, h}) do
+    palette = [
+      {111, 105, 172},
+      {149, 218, 193},
+      {255, 235, 161},
+      {253, 111, 150}
+    ]
+
+    [first, second | _] = Enum.shuffle(palette)
+
+    diameter = Sketch.Math.remap(0.4, {0, 1}, {0, w})
+    x_jitter = Sketch.Math.remap(:rand.uniform(), {0, 1}, {-w / 5, w / 5})
+    y_jitter = Sketch.Math.remap(:rand.uniform(), {0, 1}, {-w / 5, w / 5})
+
+    first_origin = {w / 2, h / 2}
+    second_origin = {w / 2 + x_jitter, h / 2 + y_jitter}
+
+    sketch
+    |> fill(first)
+    |> circle(%{origin: first_origin, diameter: diameter})
+    |> fill(second)
+    |> circle(%{origin: second_origin, diameter: diameter})
+  end
+
   defp add_fern_points(sketch, detail) do
     {sketch, _} =
       for _ <- 1..detail, reduce: {sketch, {0, 0}} do

@@ -94,7 +94,14 @@ Sketch.new()
 - [x] Stroke colour
 - [x] Stroke weight
 - [x] Alpha support
+- [ ] HSV support
+- [ ] Gradients
 - [ ] Stroke style (dashed lines etc.)
+
+## Math etc
+
+- [x] Lerp
+- [x] Map
 
 ## Inspirations
 

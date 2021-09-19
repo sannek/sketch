@@ -17,6 +17,11 @@ defmodule Sketch do
 
   @type coordinates :: {number, number}
   @type radians :: float
+
+  @default_fill {255, 255, 255}
+  @default_stroke_color {0, 0, 0}
+  @default_stroke_weight 1
+
   @moduledoc """
 
   """
@@ -40,6 +45,7 @@ defmodule Sketch do
       height: Keyword.get(opts, :height, 600),
       background: background
     }
+    |> set_fill(@default_fill)
   end
 
   @doc """
@@ -65,6 +71,12 @@ defmodule Sketch do
     |> Sketch.rotate(:math.pi() / 8)
     |> Sketch.square(%{origin: {0, 0}, size: 50})
   end
+
+  ######################
+  ##                  ##
+  ##    PRIMITIVES    ##
+  ##                  ##
+  ######################
 
   @doc """
   Add a line to a sketch
@@ -99,17 +111,11 @@ defmodule Sketch do
     add_item(sketch, square)
   end
 
-  @doc """
-  Add any shape to a sketch. Usually it will be easier to use the helper functions for the individual primitives
-  instead of using this directly, but this is exposed to allow custom shapes to be added.
-
-  Note: custom shapes should Just Work™️, as long as they have an `:id` key, and implement the `Sketch.Render` protocol
-  """
-  def add_item(sketch, item) do
-    items = Map.put_new(sketch.items, item.id, item)
-    order = [item.id | sketch.order]
-    %{sketch | items: items, order: order}
-  end
+  ######################
+  ##                  ##
+  ##      Styles      ##
+  ##                  ##
+  ######################
 
   @doc """
   Set the fill colour for any primitives following this function.
@@ -118,6 +124,12 @@ defmodule Sketch do
     fill = %{type: :fill, color: Sketch.Color.new(col), id: next_id(sketch)}
     add_item(sketch, fill)
   end
+
+  ######################
+  ##                  ##
+  ##    Transforms    ##
+  ##                  ##
+  ######################
 
   @doc """
   Moves the origin by dx, dy. Before any translations are applied, the origin {0,0} is in the top left of the sketch
@@ -182,6 +194,24 @@ defmodule Sketch do
   @spec reset_matrix(Sketch.t()) :: Sketch.t()
   def reset_matrix(sketch) do
     add_item(sketch, %{type: :reset_matrix, id: next_id(sketch)})
+  end
+
+  ######################
+  ##                  ##
+  ##      Other       ##
+  ##                  ##
+  ######################
+
+  @doc """
+  Add any operation to a sketch. Usually it will be easier to use the helper functions for the individual primitives
+  instead of using this directly, but this is exposed to allow custom shapes to be added.
+
+  Note: custom operations should Just Work™️, as long as they have an `:id` key, and implement the `Sketch.Render` protocol
+  """
+  def add_item(sketch, item) do
+    items = Map.put_new(sketch.items, item.id, item)
+    order = [item.id | sketch.order]
+    %{sketch | items: items, order: order}
   end
 
   defp next_id(%{order: []}), do: 1

@@ -28,8 +28,8 @@ defmodule Sketch.Render.Png do
           %{type: :reset_matrix} ->
             {image, []}
 
-          shape ->
-            {Sketch.Primitives.Render.render_png(shape, image, transforms), transforms}
+          item ->
+            {Sketch.Render.render_png(item, image, transforms), transforms}
         end
       end)
 

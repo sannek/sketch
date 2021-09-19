@@ -78,8 +78,8 @@ defmodule Sketch.Runner do
           matrix = :wxGraphicsContext.createMatrix(context)
           :wxGraphicsContext.setTransform(context, matrix)
 
-        shape ->
-          Sketch.Primitives.Render.render_wx(shape, context)
+        item ->
+          Sketch.Render.render_wx(item, context)
       end
     end)
   end

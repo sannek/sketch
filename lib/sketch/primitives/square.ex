@@ -35,7 +35,7 @@ defmodule Sketch.Primitives.Square do
   end
 end
 
-defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Square do
+defimpl Sketch.Render, for: Sketch.Primitives.Square do
   def render_wx(square, wx_context) do
     {x, y} = square.origin
     :wxGraphicsContext.drawRectangle(wx_context, x, y, square.size, square.size)

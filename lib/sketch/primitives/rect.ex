@@ -38,7 +38,7 @@ defmodule Sketch.Primitives.Rect do
   end
 end
 
-defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Rect do
+defimpl Sketch.Render, for: Sketch.Primitives.Rect do
   def render_wx(rect, wx_context) do
     {x, y} = rect.origin
     :wxGraphicsContext.drawRectangle(wx_context, x, y, rect.width, rect.height)

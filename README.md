@@ -89,6 +89,8 @@ Sketch.new()
 ## Color and Style
 
 - [x] Fill
+- [ ] No Fill
+- [ ] No Stroke
 - [ ] Stroke colour
 - [ ] Stroke weight
 - [ ] Stroke style (dashed lines etc.)
@@ -101,9 +103,10 @@ Sketch.new()
 
 ## Improvements
 
-Thinking ahead beyond this hackathon, there are some things that could (should) probably be improved and expanded on:
+Thinking beyond this hackathon, there are many things that could (should) probably be improved and expanded on:
 
 - [ ] Animation!
+- [ ] Text
 - [ ] Math and Random helper modules (simple wrappers & maybe some nice noise implementations?)
 - [ ] Allow setting random seeds and persisting those so screen/png are the same result
 - [ ] Interaction??

@@ -36,7 +36,7 @@ defmodule Sketch.Primitives.Line do
   end
 end
 
-defimpl Sketch.Primitives.Render, for: Sketch.Primitives.Line do
+defimpl Sketch.Render, for: Sketch.Primitives.Line do
   def render_wx(line, wx_context) do
     # Line accepts floats so we need to convert
     %{start: {startX, startY}, finish: {finishX, finishY}} = line

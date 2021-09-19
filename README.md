@@ -14,6 +14,16 @@ def deps do
 end
 ```
 
+## Example Art
+
+
+### Maurer Rose
+
+Generated with `Examples.maurer_rose(6, 71) |> Sketch.save()`. Have a look at the [Wikipedia article](https://en.wikipedia.org/wiki/Maurer_rose) for more information about the Maurer rose, and for more values to try!
+
+![Maurer Rose](maurer_rose.png)
+
+
 ### Usage Examples
 
 One of the main aims of Sketch is to be easy and intuitive to use, so basic usage is fairly simple: Create a `%Sketch{}` struct with `Sketch.new()`, and use any of the other functions to add or change things about your sketch. Since all functions in the

@@ -1,21 +1,7 @@
 # Sketch
 
 A library for creating generative art with Elixir. Sketch only supports generating static images (There's only so much one can achieve in 48h, hopefully ther will be animation in the future)
-
-## Usage
-
-Currently Sketch is not yet available on Hex, but to give it a try you can install it directly from this repo:
-
-```elixir
-def deps do
-  [
-    {:sketch, git: "https://github.com/spawnfest/toe-BEAMS.git", branch: "main"}
-  ]
-end
-```
-
 ## Example Art
-
 
 ### Maurer Rose
 
@@ -31,12 +17,27 @@ This one would look even cooler with higher detail, but I hit the limit of what 
 
 ![Barnsley Fern](barnsley_fern.png)
 
+
+## Usage
+
+Currently Sketch is not yet available on Hex, but to give it a try you can install it directly from this repo.
+
+```elixir
+def deps do
+  [
+    {:sketch, git: "https://github.com/spawnfest/toe-BEAMS.git", branch: "main"}
+  ]
+end
+```
+
 ### Usage Examples
 
 One of the main aims of Sketch is to be easy and intuitive to use, so basic usage is fairly simple: Create a `%Sketch{}` struct with `Sketch.new()`, and use any of the other functions to add or change things about your sketch. Since all functions in the
 main `Sketch` module take a `%Sketch{}` as the first argument and return a `%Sketch{}`, you can easily pipe everything together.
 
 Once you've built your final `Sketch`, you can call `Sketch.run(sketch)` to render it on screen (using `wxWidgets`), or `Sketch.save(sketch)` to save it as a `png`. (Note: saving to PNG requires you to have [ImageMagick](https://imagemagick.org/script/download.php) installed on your machine)
+
+There is currently some weirdness that the `:wx` window does not always paint on first load. It will generally work if you close and rerun the sketch - Unfortunately I've not been able to get to the bottom of that in the time limit.
 
 ```elixir
 Sketch.new()
@@ -75,6 +76,7 @@ Sketch.new()
 
 ## Features
 
+A brief overview of features that are available so far, and ones that you might expect from a drawing library, that are not yet implemented.
 ### General
 
 - [x] Sketch size

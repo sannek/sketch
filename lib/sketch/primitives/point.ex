@@ -16,7 +16,7 @@ defmodule Sketch.Primitives.Point do
   def verify!(params) do
     case verify(params) do
       {:ok, data} -> data
-      err -> raise Error, message: info(params), err: err, data: params
+      _err -> raise Error, message: info(params), data: params
     end
   end
 

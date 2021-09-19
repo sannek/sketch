@@ -12,14 +12,15 @@ defmodule Sketch.Primitives.Rect do
           height: number()
         }
 
-  def new(%{origin: origin, width: width, height: height, id: id}) do
-    %__MODULE__{origin: origin, width: width, height: height, id: id}
+  def new(%{id: id} = params) do
+    data = verify!(params)
+    %__MODULE__{origin: data.origin, width: data.width, height: data.height, id: id}
   end
 
   def verify!(params) do
     case verify(params) do
       {:ok, data} -> data
-      err -> raise Error, message: info(params), err: err, data: params
+      _err -> raise Error, message: info(params), data: params
     end
   end
 

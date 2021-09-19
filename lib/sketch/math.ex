@@ -8,7 +8,7 @@ defmodule Sketch.Math do
     iex> Sketch.Math.lerp(0, 100, 0.5)
     50.0
 
-    iex> Sketch.Math.map(0, 100, 2)
+    iex> Sketch.Math.lerp(0, 100, 2)
     200.0
   """
   @spec lerp(number(), number(), number()) :: float()

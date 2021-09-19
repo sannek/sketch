@@ -9,15 +9,15 @@ defmodule Sketch.Primitives.Line do
           finish: coordinates()
         }
 
-  def new(params) do
+  def new(%{id: id} = params) do
     data = verify!(params)
-    %__MODULE__{start: data.start, finish: data.finish, id: params.id}
+    %__MODULE__{start: data.start, finish: data.finish, id: id}
   end
 
   def verify!(params) do
     case verify(params) do
       {:ok, data} -> data
-      err -> raise Error, message: info(params), err: err, data: params
+      _err -> raise Error, message: info(params), data: params
     end
   end
 

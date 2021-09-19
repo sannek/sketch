@@ -10,14 +10,15 @@ defmodule Sketch.Primitives.Circle do
           diameter: number()
         }
 
-  def new(%{origin: origin, diameter: diameter, id: id}) do
-    %__MODULE__{origin: origin, diameter: diameter, id: id}
+  def new(%{id: id} = params) do
+    data = verify!(params)
+    %__MODULE__{origin: data.origin, diameter: data.diameter, id: id}
   end
 
   def verify!(params) do
     case verify(params) do
       {:ok, data} -> data
-      err -> raise Error, message: info(params), err: err, data: params
+      _ -> raise Error, message: info(params), data: params
     end
   end
 

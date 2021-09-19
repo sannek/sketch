@@ -9,14 +9,15 @@ defmodule Sketch.Primitives.Square do
           size: number()
         }
 
-  def new(%{origin: origin, size: size, id: id}) do
-    %__MODULE__{origin: origin, size: size, id: id}
+  def new(%{id: id} = params) do
+    data = verify!(params)
+    %__MODULE__{origin: data.origin, size: data.size, id: id}
   end
 
   def verify!(params) do
     case verify(params) do
       {:ok, data} -> data
-      err -> raise Error, message: info(params), err: err, data: params
+      _ -> raise Error, message: info(params), data: params
     end
   end
 

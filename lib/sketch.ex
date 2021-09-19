@@ -66,6 +66,7 @@ defmodule Sketch do
 
   def example do
     new(background: {165, 122, 222})
+    |> ellipse(%{origin: {0, 0}, width: 200, height: 100})
     |> translate({400, 300})
     |> fill({0, 120, 255})
     |> no_stroke()
@@ -74,7 +75,6 @@ defmodule Sketch do
     |> stroke({0, 255, 120})
     |> stroke_weight(5)
     |> rotate(:math.pi() / 8)
-    |> square(%{origin: {0, 0}, size: 50})
   end
 
   ######################
@@ -114,6 +114,17 @@ defmodule Sketch do
     square = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Square.new()
 
     add_item(sketch, square)
+  end
+
+  @doc """
+  Adds an ellipse to the sketch. The ellipse is drawn centered around the origin.
+  """
+  @spec ellipse(Sketch.t(), %{origin: coordinates(), width: integer(), height: integer()}) ::
+          Sketch.t()
+  def ellipse(sketch, params) do
+    ellipse = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Ellipse.new()
+
+    add_item(sketch, ellipse)
   end
 
   ######################

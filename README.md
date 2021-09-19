@@ -70,7 +70,7 @@ Sketch.new()
 - [x] Line
 - [x] Rectangle
 - [x] Square
-- [ ] Ellipse
+- [x] Ellipse
 - [ ] Circle
 - [ ] Arc
 - [ ] Triangle
@@ -89,10 +89,10 @@ Sketch.new()
 ## Color and Style
 
 - [x] Fill
-- [ ] No Fill
-- [ ] No Stroke
-- [ ] Stroke colour
-- [ ] Stroke weight
+- [x] No Fill
+- [x] No Stroke
+- [x] Stroke colour
+- [x] Stroke weight
 - [ ] Stroke style (dashed lines etc.)
 - [ ] Alpha support
 

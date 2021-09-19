@@ -71,9 +71,9 @@ Sketch.new()
 - [x] Rectangle
 - [x] Square
 - [x] Ellipse
-- [ ] Circle
-- [ ] Arc
+- [x] Circle
 - [ ] Triangle
+- [ ] Arc
 - [ ] Quad
 - [ ] Path (for more complex lines)
 

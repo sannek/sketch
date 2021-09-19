@@ -6,7 +6,7 @@ defmodule Sketch do
             order: [],
             background: Sketch.Color.new({120, 120, 120})
 
-  @type t :: %Sketch{
+  @type sketch :: %Sketch{
           title: String.t(),
           width: number,
           height: number,
@@ -35,7 +35,7 @@ defmodule Sketch do
    * `:height` - Height of the sketch in pixels, defaults to 600
    * `:background` - Background colour of the sketch as a `{r, g, b}` tuple, defaults to `{120, 120, 120}` (a medium gray)
   """
-  @spec new(opts :: list) :: Sketch.t()
+  @spec new(opts :: list) :: sketch()
   def new(opts \\ []) do
     background = Keyword.get(opts, :background, {120, 120, 120}) |> Sketch.Color.new()
 
@@ -70,7 +70,7 @@ defmodule Sketch do
     |> translate({400, 300})
     |> fill({0, 120, 255})
     |> no_stroke()
-    |> square(%{origin: {0, 0}, size: 50})
+    |> circle(%{origin: {0, 0}, diameter: 50})
     |> no_fill()
     |> stroke({0, 255, 120})
     |> stroke_weight(5)
@@ -86,7 +86,7 @@ defmodule Sketch do
   @doc """
   Add a line to a sketch
   """
-  @spec line(Sketch.t(), %{start: coordinates(), finish: coordinates()}) :: Sketch.t()
+  @spec line(sketch(), %{start: coordinates(), finish: coordinates()}) :: sketch()
   def line(%Sketch{} = sketch, params) do
     line = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Line.new()
 
@@ -96,8 +96,8 @@ defmodule Sketch do
   @doc """
   Add a rectangle to a sketch
   """
-  @spec rect(Sketch.t(), %{origin: coordinates(), width: integer(), height: integer()}) ::
-          Sketch.t()
+  @spec rect(sketch(), %{origin: coordinates(), width: integer(), height: integer()}) ::
+          sketch()
   def rect(sketch, params) do
     rect = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Rect.new()
 
@@ -108,8 +108,8 @@ defmodule Sketch do
   Add a square to a sketch. This is not meaningfullly different from adding a rectangle with the same width and height,
   but is a convenience function for readability.
   """
-  @spec square(Sketch.t(), %{origin: coordinates(), size: integer()}) ::
-          Sketch.t()
+  @spec square(sketch(), %{origin: coordinates(), size: integer()}) ::
+          sketch()
   def square(%Sketch{} = sketch, params) do
     square = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Square.new()
 
@@ -119,12 +119,23 @@ defmodule Sketch do
   @doc """
   Adds an ellipse to the sketch. The ellipse is drawn centered around the origin.
   """
-  @spec ellipse(Sketch.t(), %{origin: coordinates(), width: integer(), height: integer()}) ::
-          Sketch.t()
+  @spec ellipse(sketch(), %{origin: coordinates(), width: number(), height: number()}) ::
+          sketch()
   def ellipse(sketch, params) do
     ellipse = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Ellipse.new()
 
     add_item(sketch, ellipse)
+  end
+
+  @doc """
+  Adds a circle to the sketch. The circle is drawn centered around the origin.
+  """
+  @spec circle(sketch(), %{origin: coordinates(), diameter: number()}) ::
+          sketch()
+  def circle(sketch, params) do
+    circle = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Circle.new()
+
+    add_item(sketch, circle)
   end
 
   ######################
@@ -184,7 +195,7 @@ defmodule Sketch do
 
   Stacks with other transforms, until Sketch.reset_matrix/1 is called to clear all transforms.
   """
-  @spec translate(Sketch.t(), {number(), number()}) :: Sketch.t()
+  @spec translate(sketch(), {number(), number()}) :: sketch()
   def translate(sketch, {dx, dy}) do
     translate = %{
       type: :translate,
@@ -203,7 +214,7 @@ defmodule Sketch do
 
   Stacks with other transforms, until Sketch.reset_matrix/1 is called to clear all transforms.
   """
-  @spec rotate(Sketch.t(), radians()) :: Sketch.t()
+  @spec rotate(sketch(), radians()) :: sketch()
   def rotate(sketch, angle) do
     rotate = %{
       type: :rotate,
@@ -225,7 +236,7 @@ defmodule Sketch do
 
   Stacks with other transforms, until Sketch.reset_matrix/1 is called to clear all transforms.
   """
-  @spec scale(Sketch.t(), number() | {number(), number()}) :: Sketch.t()
+  @spec scale(sketch(), number() | {number(), number()}) :: sketch()
   def scale(sketch, xy_scale) when is_number(xy_scale) do
     scale(sketch, {xy_scale, xy_scale})
   end
@@ -239,7 +250,7 @@ defmodule Sketch do
   Resets the current transformation matrix for the sketch, removing all transformations (translate, scale, rotate etc.) that
   have been applied until this point.
   """
-  @spec reset_matrix(Sketch.t()) :: Sketch.t()
+  @spec reset_matrix(sketch()) :: sketch()
   def reset_matrix(sketch) do
     add_item(sketch, %{type: :reset_matrix, id: next_id(sketch)})
   end

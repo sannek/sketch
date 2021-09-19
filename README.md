@@ -1,47 +1,115 @@
 # Sketch
 
-Saving a sketch as a png requires [ImageMagick](https://imagemagick.org/script/index.php) to be installed on your machine!
+A library for creating generative art with Elixir. Sketch only supports generating static images (There's only so much one can achieve in 48h, hopefully ther will be animation in the future)
 
-**TODO: Add description**
+## Usage
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `sketch` to your list of dependencies in `mix.exs`:
+Currently Sketch is not yet available on Hex, but to give it a try you can install it directly from this repo:
 
 ```elixir
 def deps do
   [
-    {:sketch, "~> 0.1.0"}
+    {:sketch, git: "https://github.com/spawnfest/toe-BEAMS.git", branch: "main"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/sketch](https://hexdocs.pm/sketch).
+### Usage Examples
 
-## How to use
+One of the main aims of Sketch is to be easy and intuitive to use, so basic usage is fairly simple: Create a `%Sketch{}` struct with `Sketch.new()`, and use any of the other functions to add or change things about your sketch. Since all functions in the
+main `Sketch` module take a `%Sketch{}` as the first argument and return a `%Sketch{}`, you can easily pipe everything together.
 
-1. Create a canvas with `Sketch.new`
-2. Draw the rest of the fucking owl
+Once you've built your final `Sketch`, you can call `Sketch.run(sketch)` to render it on screen (using `wxWidgets`), or `Sketch.save(sketch)` to save it as a `png`. (Note: saving to PNG requires you to have [ImageMagick](https://imagemagick.org/script/download.php) installed on your machine)
 
-```
-Sketch.new
+```elixir
+Sketch.new()
+|> Sketch.set_fill({100, 100, 100})
 |> Sketch.square(%{origin: {0, 0}, size: 50})
-|> Sketch.run
+|> Sketch.run()
 ```
 
-This will draw a square with its top left corner at x 0, y 0 and a width and height of 50.
+This will draw a medium gray square with its top left corner at x 0, y 0 and a width and height of 50.
 
 To add more shapes to the canvas, just keep piping:
 
-```
-Sketch.new
+```elixir
+Sketch.new()
 |> Sketch.square(%{origin: {0, 0}, size: 50})
 |> Sketch.rect(%{origin: {0, 0}, width: 10, height: 20})
 |> Sketch.line(%{start: {0, 0}, finish: {50, 50}})
-|> Sketch.run
+|> Sketch.save()
 ```
 
-[Insert beautiful drawing here]
+Any fill, stroke or transforms applied to the sketch will apply to anything added after, and will stack with any applied before them. You can use `Sketch.reset_matrix/1` to remove all transforms applied up until that point. A future goal is to allow overrides on specific primitives, but that is beyond the scope of a weekend.
+
+```elixir
+Sketch.new()
+|> Sketch.translate({20, 20})
+# This next square will be drawn at {20,20} from the top left
+|> Sketch.square(%{origin: {0, 0}, size: 50})
+|> Sketch.translate({10, 10})
+# This next square will be drawn at {30,30} from the top left
+|> Sketch.square(%{origin: {0, 0}, size: 50})
+|> Sketch.reset_matrix()
+# This next square will be drawn at {0,0} from the top left
+|> Sketch.square(%{origin: {0, 0}, size: 50})
+|> Sketch.save()
+```
+
+## Features
+
+### General
+
+- [x] Sketch size
+- [x] Sketch title
+- [x] Sketch background colour
+- [ ] Specify png save location
+
+### Primitives
+
+- [x] Line
+- [x] Rectangle
+- [x] Square
+- [ ] Ellipse
+- [ ] Circle
+- [ ] Arc
+- [ ] Triangle
+- [ ] Quad
+- [ ] Path (for more complex lines)
+
+## Transforms
+
+- [x] Translate
+- [x] Rotate
+- [x] Scale
+- [x] Reset all transforms
+- [ ] Skew
+- [ ] Push & Pop
+
+## Color and Style
+
+- [x] Fill
+- [ ] Stroke colour
+- [ ] Stroke weight
+- [ ] Stroke style (dashed lines etc.)
+- [ ] Alpha support
+
+## Inspirations
+
+- [Processing & P5.js](https://processing.org/) for much of the functionality and overall approach to making ✨art✨.
+- [Scenic](https://github.com/boydm/scenic) as inspiration for how to structure things (although much of that is too ambitious for this 0.0.1 Spawnfest version)
+
+## Improvements
+
+Thinking ahead beyond this hackathon, there are some things that could (should) probably be improved and expanded on:
+
+- [ ] Animation!
+- [ ] Math and Random helper modules (simple wrappers & maybe some nice noise implementations?)
+- [ ] Allow setting random seeds and persisting those so screen/png are the same result
+- [ ] Interaction??
+
+- [ ] More graceful / supervised starting of the wx object when calling `Sketch.run/1`
+- [ ] Test coverage
+- [ ] Data validation for creating primitives
+- [ ] Friendly errors
+- [ ] Figure out why the `wx` window sometimes doesn't get the render message?

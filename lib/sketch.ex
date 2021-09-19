@@ -4,7 +4,7 @@ defmodule Sketch do
             height: 600,
             items: %{},
             order: [],
-            background: Sketch.Color.new({255, 255, 255})
+            background: Sketch.Color.new({120, 120, 120})
 
   @type t :: %Sketch{
           title: String.t(),
@@ -22,11 +22,17 @@ defmodule Sketch do
   """
 
   @doc """
-    Create a new Sketch
+   Create a new Sketch struct to be used for further operations.
+
+   ## Options
+   * `:title` - The title of the sketch, defaults to "Sketch"
+   * `:width` - Width of the sketch in pixels, defaults to 800
+   * `:height` - Height of the sketch in pixels, defaults to 600
+   * `:background` - Background colour of the sketch as a `{r, g, b}` tuple, defaults to `{120, 120, 120}` (a medium gray)
   """
   @spec new(opts :: list) :: Sketch.t()
   def new(opts \\ []) do
-    background = Keyword.get(opts, :background, {255, 255, 255}) |> Sketch.Color.new()
+    background = Keyword.get(opts, :background, {120, 120, 120}) |> Sketch.Color.new()
 
     %__MODULE__{
       title: Keyword.get(opts, :title, "Sketch"),
@@ -37,30 +43,27 @@ defmodule Sketch do
   end
 
   @doc """
-  Open a window to show the drawn sketch (using wxWidgets)
+  Open a window to show the sketch (using wxWidgets)
   """
   def run(%Sketch{} = sketch) do
     Sketch.Runner.start_link(sketch)
   end
 
+  @doc """
+  Save current sketch as png (requires ImageMagick to be installed locally)
+  """
   def save(%Sketch{} = sketch) do
     Sketch.Render.Png.render(sketch)
   end
 
   def example do
     Sketch.new(background: {165, 122, 222})
-    |> Sketch.line(%{start: {0, 0}, finish: {100, 100}})
-    |> Sketch.set_fill({200, 120, 0})
-    |> Sketch.rect(%{origin: {40, 40}, width: 30, height: 30})
-    |> Sketch.translate(50, 50)
+    |> Sketch.translate({400, 300})
     |> Sketch.set_fill({0, 120, 255})
     |> Sketch.square(%{origin: {0, 0}, size: 50})
     |> Sketch.set_fill({30, 50, 89})
-    |> Sketch.rotate(0.5)
+    |> Sketch.rotate(:math.pi() / 8)
     |> Sketch.square(%{origin: {0, 0}, size: 50})
-    |> Sketch.reset_matrix()
-    |> Sketch.set_fill({80, 123, 200})
-    |> Sketch.square(%{origin: {250, 250}, size: 70})
   end
 
   @doc """
@@ -108,12 +111,21 @@ defmodule Sketch do
     %{sketch | items: items, order: order}
   end
 
+  @doc """
+  Set the fill colour for any primitives following this function.
+  """
   def set_fill(sketch, {_r, _g, _b} = col) do
     fill = %{type: :fill, color: Sketch.Color.new(col), id: next_id(sketch)}
     add_item(sketch, fill)
   end
 
-  def translate(sketch, dx, dy) do
+  @doc """
+  Moves the origin by dx, dy. Before any translations are applied, the origin {0,0} is in the top left of the sketch
+
+  Stacks with other transforms, until Sketch.reset_matrix/1 is called to clear all transforms.
+  """
+  @spec translate(Sketch.t(), {number(), number()}) :: Sketch.t()
+  def translate(sketch, {dx, dy}) do
     translate = %{
       type: :translate,
       dx: dx,
@@ -124,6 +136,13 @@ defmodule Sketch do
     add_item(sketch, translate)
   end
 
+  @doc """
+  Rotates the canvas clockwise around the current origin ({0,0} by default, but this can be moved with Sketch.translate/2).
+
+  The `angle` is assumed to be in radians!
+
+  Stacks with other transforms, until Sketch.reset_matrix/1 is called to clear all transforms.
+  """
   @spec rotate(Sketch.t(), radians()) :: Sketch.t()
   def rotate(sketch, angle) do
     rotate = %{
@@ -135,15 +154,32 @@ defmodule Sketch do
     add_item(sketch, rotate)
   end
 
-  def scale(sketch, xy_scale) do
-    scale(sketch, xy_scale, xy_scale)
+  @doc """
+  Scales the canvas.
+
+  Examples:
+  - `Sketch.scale(sketch, 2)` will scale uniformly by 2 along both the x and y axis
+  - `Sketch.scale(sketch, {2, 2})` will scale uniformly by 2 along both the x and y axis
+  - `Sketch.scale(sketch, {2, 1})` will scale by 2 along the x-axis, but not along the y-axis
+  - `Sketch.scale(sketch, {-1, 1})` will flip the drawing along the x-axis
+
+  Stacks with other transforms, until Sketch.reset_matrix/1 is called to clear all transforms.
+  """
+  @spec scale(Sketch.t(), number() | {number(), number()}) :: Sketch.t()
+  def scale(sketch, xy_scale) when is_number(xy_scale) do
+    scale(sketch, {xy_scale, xy_scale})
   end
 
-  def scale(sketch, sx, sy) do
+  def scale(sketch, {sx, sy}) when is_number(sx) and is_number(sy) do
     scale_props = %{type: :scale, sx: sx, sy: sy, id: next_id(sketch)}
     add_item(sketch, scale_props)
   end
 
+  @doc """
+  Resets the current transformation matrix for the sketch, removing all transformations (translate, scale, rotate etc.) that
+  have been applied until this point.
+  """
+  @spec reset_matrix(Sketch.t()) :: Sketch.t()
   def reset_matrix(sketch) do
     add_item(sketch, %{type: :reset_matrix, id: next_id(sketch)})
   end

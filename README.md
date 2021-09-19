@@ -2,29 +2,29 @@
 
 ![Candy coloured dots laid out in a grid](candy_dots_small.png)
 
-A library for creating generative art with Elixir. Sketch only supports generating static images (There's only so much one can achieve in 48h, hopefully ther will be animation in the future)
+A library for creating generative art with Elixir. Currently Sketch only supports generating static images (There's only so much one can achieve in 48h, hopefully there will be animation in the future)
 
 ## Example Art
 
-### Maurer Rose
+The code used to generate all of the images below can be found in the [`Examples` module](lib/examples.ex)
+
+Generated with `Examples.candy_dots(6) |> Sketch.save()`
+
+![Candy coloured dots laid out in a grid](candy_dots.png)
+
+Generated with `Examples.colourful_grid() |> Sketch.save()`
+
+![Grid of various shapes in autumn colours](color_grid.png)
 
 Generated with `Examples.maurer_rose(6, 71) |> Sketch.save()`. Have a look at the [Wikipedia article](https://en.wikipedia.org/wiki/Maurer_rose) for more information about the Maurer rose, and for more values to try!
 
 ![Maurer Rose](maurer_rose.png)
 
-### Barnsley Fern
-
 Generated with `Examples.barnsley_fern(7000) |> Sketch.save()`. Have a look at the [Wikipedia article](https://en.wikipedia.org/wiki/Barnsley_fern) for more information about the Barnsley Fern
 
-This one would look even cooler with higher detail, but I hit the limit of what `Mogrify` could deal with. Optimizations to come after Spawnfest I'm afraid!
+This one would look even cooler with higher detail, but I hit the limit of what `Mogrify` could deal with at around 7000 drawing operations. Optimizations to come after Spawnfest I'm afraid!
 
 ![Barnsley Fern](barnsley_fern.png)
-
-### Other
-
-Generated with `Examples.candy_dots(6) |> Sketch.save()`
-
-![Candy coloured dots laid out in a grid](candy_dots.png)
 
 ## Usage
 

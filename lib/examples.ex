@@ -24,13 +24,18 @@ defmodule Examples do
   end
 
   def candy_dots(count \\ 5) do
-    new(width: 300, height: 300, title: "tiles", background: {255, 255, 255})
+    new(width: 600, height: 600, title: "candy_dots", background: {255, 255, 255})
     |> no_stroke()
-    |> add_tiles(count)
+    |> add_tiles(count, &add_candy_dot_tile/2)
   end
 
-  defp add_tiles(sketch, count) do
-    margin = min(sketch.width, sketch.height) / 10
+  def colourful_grid(count \\ 20) do
+    new(width: 600, height: 600, title: "grid", background: {235, 218, 202})
+    |> add_tiles(count, &add_colourful_grid_tile/2, 0)
+  end
+
+  defp add_tiles(sketch, count, tile_fun, margin_percentage \\ 0.1) do
+    margin = min(sketch.width, sketch.height) * margin_percentage
     tile_width = (sketch.width - 2 * margin) / count
     tile_height = (sketch.height - 2 * margin) / count
 
@@ -39,11 +44,46 @@ defmodule Examples do
         sketch
         |> reset_matrix()
         |> translate({i * tile_width + margin, j * tile_height + margin})
-        |> add_tile({tile_width, tile_height})
+        |> tile_fun.({tile_width, tile_height})
     end
   end
 
-  defp add_tile(sketch, {w, h}) do
+  defp add_colourful_grid_tile(sketch, {w, h}) do
+    [color | _] = Enum.shuffle([{75, 102, 87}, {216, 194, 183}, {0, 138, 138}, {178, 81, 72}])
+
+    [shape | _] = Enum.shuffle([:solid_square, :small_circle, :circle_outline, :none])
+
+    case shape do
+      :none ->
+        sketch
+
+      :solid_square ->
+        sketch
+        |> no_stroke()
+        |> fill(color)
+        |> square(%{origin: {0, 0}, size: w})
+
+      :small_circle ->
+        diameter = Sketch.Math.remap(0.2, {0, 1}, {0, w})
+
+        sketch
+        |> no_stroke()
+        |> fill(color)
+        |> circle(%{origin: {w / 2, h / 2}, diameter: diameter})
+
+      :circle_outline ->
+        weight = Sketch.Math.remap(25, {0, 100}, {0, w}) |> ceil()
+        diameter = w - weight
+
+        sketch
+        |> no_fill()
+        |> stroke(color)
+        |> stroke_weight(weight)
+        |> circle(%{origin: {w / 2, h / 2}, diameter: diameter})
+    end
+  end
+
+  defp add_candy_dot_tile(sketch, {w, h}) do
     palette = [
       {111, 105, 172},
       {149, 218, 193},

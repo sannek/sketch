@@ -1,5 +1,7 @@
 # Sketch
 
+![Candy coloured dots laid out in a grid](candy_dots_small.png)
+
 A library for creating generative art with Elixir. Sketch only supports generating static images (There's only so much one can achieve in 48h, hopefully ther will be animation in the future)
 
 ## Example Art
@@ -42,7 +44,6 @@ One of the main aims of Sketch is to be easy and intuitive to use, so basic usag
 main `Sketch` module take a `%Sketch{}` as the first argument and return a `%Sketch{}`, you can easily pipe everything together.
 
 Once you've built your final `Sketch`, you can call `Sketch.run(sketch)` to render it on screen (using `wxWidgets`), or `Sketch.save(sketch)` to save it as a `png`. (Note: saving to PNG requires you to have [ImageMagick](https://imagemagick.org/script/download.php) installed on your machine)
-
 
 ### Known Issues
 

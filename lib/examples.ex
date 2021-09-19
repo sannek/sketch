@@ -24,7 +24,7 @@ defmodule Examples do
   end
 
   def candy_dots(count \\ 5) do
-    new(width: 600, height: 600, title: "tiles", background: {255, 255, 255})
+    new(width: 300, height: 300, title: "tiles", background: {255, 255, 255})
     |> no_stroke()
     |> add_tiles(count)
   end

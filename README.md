@@ -8,13 +8,13 @@ A library for creating generative art with Elixir. Currently Sketch only support
 
 The code used to generate all of the images below can be found in the [`Examples` module](lib/examples.ex)
 
-Generated with `Examples.candy_dots(6) |> Sketch.save()`
-
-![Candy coloured dots laid out in a grid](candy_dots.png)
-
 Generated with `Examples.colourful_grid() |> Sketch.save()`
 
 ![Grid of various shapes in autumn colours](color_grid.png)
+
+Generated with `Examples.candy_dots(6) |> Sketch.save()`
+
+![Candy coloured dots laid out in a grid](candy_dots.png)
 
 Generated with `Examples.maurer_rose(6, 71) |> Sketch.save()`. Have a look at the [Wikipedia article](https://en.wikipedia.org/wiki/Maurer_rose) for more information about the Maurer rose, and for more values to try!
 
@@ -140,6 +140,7 @@ A brief overview of features that are available so far, and ones that you might 
 ## Inspirations
 
 - [Processing & P5.js](https://processing.org/) for much of the functionality and overall approach to making ✨art✨.
+- [The Coding Train](https://www.youtube.com/channel/UCvjgXvBlbQiydffZU7m1_aw) for general generative art inspiration!
 - [Scenic](https://github.com/boydm/scenic) as inspiration for how to structure things (although much of that is too ambitious for this 0.0.1 Spawnfest version)
 
 ## Improvements

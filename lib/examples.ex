@@ -30,7 +30,7 @@ defmodule Examples do
   end
 
   def colourful_grid(count \\ 20) do
-    new(width: 600, height: 600, title: "grid", background: {235, 218, 202})
+    new(width: 600, height: 600, title: "grid", background: {170, 179, 171})
     |> add_tiles(count, &add_colourful_grid_tile/2, 0)
   end
 
@@ -49,7 +49,8 @@ defmodule Examples do
   end
 
   defp add_colourful_grid_tile(sketch, {w, h}) do
-    [color | _] = Enum.shuffle([{75, 102, 87}, {216, 194, 183}, {0, 138, 138}, {178, 81, 72}])
+    [color | _] =
+      Enum.shuffle([{196, 203, 183}, {235, 239, 201}, {238, 224, 183}, {232, 202, 175}])
 
     [shape | _] = Enum.shuffle([:solid_square, :small_circle, :circle_outline, :none])
 

@@ -43,7 +43,13 @@ main `Sketch` module take a `%Sketch{}` as the first argument and return a `%Ske
 
 Once you've built your final `Sketch`, you can call `Sketch.run(sketch)` to render it on screen (using `wxWidgets`), or `Sketch.save(sketch)` to save it as a `png`. (Note: saving to PNG requires you to have [ImageMagick](https://imagemagick.org/script/download.php) installed on your machine)
 
+
+### Known Issues
+
 There is currently some weirdness that the `:wx` window does not always paint on first load. It will generally work if you close and rerun the sketch - Unfortunately I've not been able to get to the bottom of that in the time limit.
+
+In addition, I unfortunately only had access to a MacBook this weekend. I am not aware of
+any reasons why things _shouldn't_ work as expected on other operating systems, but figured I'd mention it just in case...
 
 ```elixir
 Sketch.new()

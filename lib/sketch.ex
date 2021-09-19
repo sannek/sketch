@@ -86,7 +86,8 @@ defmodule Sketch do
     |> no_fill()
     |> stroke({0, 255, 120})
     |> stroke_weight(5)
-    |> rotate(:math.pi() / 8)
+    |> point(%{origin: {0, 0}})
+    |> circle(%{origin: {0, 0}, diameter: 250})
   end
 
   ######################
@@ -94,6 +95,16 @@ defmodule Sketch do
   ##    PRIMITIVES    ##
   ##                  ##
   ######################
+
+  @doc """
+  Add a point to a sketch. The size and color of the point are determined by stroke weight and color.
+  """
+  @spec point(sketch(), %{origin: coordinates()}) :: sketch()
+  def point(%Sketch{} = sketch, params) do
+    point = Map.put(params, :id, next_id(sketch)) |> Sketch.Primitives.Point.new()
+
+    add_item(sketch, point)
+  end
 
   @doc """
   Add a line to a sketch

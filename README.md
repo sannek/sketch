@@ -1,6 +1,7 @@
 # Sketch
 
 A library for creating generative art with Elixir. Sketch only supports generating static images (There's only so much one can achieve in 48h, hopefully ther will be animation in the future)
+
 ## Example Art
 
 ### Maurer Rose
@@ -16,7 +17,6 @@ Generated with `Examples.barnsley_fern(7000) |> Sketch.save()`. Have a look at t
 This one would look even cooler with higher detail, but I hit the limit of what `Mogrify` could deal with. Optimizations to come after Spawnfest I'm afraid!
 
 ![Barnsley Fern](barnsley_fern.png)
-
 
 ### Other
 
@@ -137,15 +137,15 @@ A brief overview of features that are available so far, and ones that you might 
 
 ## Improvements
 
-Thinking beyond this hackathon, there are many things that could (should) probably be improved and expanded on:
+Thinking beyond this hackathon, there are many things that could (should) probably be improved and expanded on in no particular order!
 
 - [ ] Animation!
+- [ ] Use OpenGL instead?
 - [ ] Text
 - [ ] Math and Random helper modules
 - [ ] Random seeds and persisting those so screen/png are the same result
 - [ ] Interaction??
 - [ ] More graceful starting of the wx object when calling `Sketch.run/1`
 - [ ] Test coverage
-- [ ] Data validation for creating primitives
 - [ ] Friendly errors
 - [ ] Figure out why the `wx` window sometimes doesn't get the render message?

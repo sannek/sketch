@@ -45,7 +45,9 @@ defmodule Sketch do
       height: Keyword.get(opts, :height, 600),
       background: background
     }
-    |> set_fill(@default_fill)
+    |> fill(@default_fill)
+    |> stroke(@default_stroke_color)
+    |> stroke_weight(@default_stroke_weight)
   end
 
   @doc """
@@ -63,13 +65,16 @@ defmodule Sketch do
   end
 
   def example do
-    Sketch.new(background: {165, 122, 222})
-    |> Sketch.translate({400, 300})
-    |> Sketch.set_fill({0, 120, 255})
-    |> Sketch.square(%{origin: {0, 0}, size: 50})
-    |> Sketch.set_fill({30, 50, 89})
-    |> Sketch.rotate(:math.pi() / 8)
-    |> Sketch.square(%{origin: {0, 0}, size: 50})
+    new(background: {165, 122, 222})
+    |> translate({400, 300})
+    |> fill({0, 120, 255})
+    |> no_stroke()
+    |> square(%{origin: {0, 0}, size: 50})
+    |> no_fill()
+    |> stroke({0, 255, 120})
+    |> stroke_weight(5)
+    |> rotate(:math.pi() / 8)
+    |> square(%{origin: {0, 0}, size: 50})
   end
 
   ######################
@@ -120,9 +125,41 @@ defmodule Sketch do
   @doc """
   Set the fill colour for any primitives following this function.
   """
-  def set_fill(sketch, {_r, _g, _b} = col) do
+  def fill(sketch, {_r, _g, _b} = col) do
     fill = %{type: :fill, color: Sketch.Color.new(col), id: next_id(sketch)}
     add_item(sketch, fill)
+  end
+
+  @doc """
+  Removes fill from any subsequent primitives.
+  """
+  def no_fill(sketch) do
+    fill = %{type: :no_fill, id: next_id(sketch)}
+    add_item(sketch, fill)
+  end
+
+  @doc """
+  Sets the stroke colour for any subsequent primitives
+  """
+  def stroke(sketch, {_r, _g, _b} = col) do
+    stroke = %{type: :stroke, color: Sketch.Color.new(col), id: next_id(sketch)}
+    add_item(sketch, stroke)
+  end
+
+  @doc """
+  Sets the stroke weight for any subsequent primitives
+  """
+  def stroke_weight(sketch, weight) do
+    stroke_weight = %{type: :stroke_weight, weight: weight, id: next_id(sketch)}
+    add_item(sketch, stroke_weight)
+  end
+
+  @doc """
+  Removes the stroke from any subsequent primitives
+  """
+  def no_stroke(sketch) do
+    stroke = %{type: :no_stroke, id: next_id(sketch)}
+    add_item(sketch, stroke)
   end
 
   ######################

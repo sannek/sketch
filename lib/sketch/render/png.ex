@@ -15,6 +15,18 @@ defmodule Sketch.Render.Png do
           %{type: :fill, color: color} ->
             {Mogrify.custom(image, "fill", Sketch.Color.to_hex(color)), transforms}
 
+          %{type: :no_fill} ->
+            {Mogrify.custom(image, "fill", "none"), transforms}
+
+          %{type: :stroke, color: color} ->
+            {Mogrify.custom(image, "stroke", Sketch.Color.to_hex(color)), transforms}
+
+          %{type: :stroke_weight, weight: weight} ->
+            {Mogrify.custom(image, "strokewidth", weight), transforms}
+
+          %{type: :no_stroke} ->
+            {Mogrify.custom(image, "stroke", "none"), transforms}
+
           %{type: :translate, dx: dx, dy: dy} ->
             {image, [{:translate, {dx, dy}} | transforms]}
 

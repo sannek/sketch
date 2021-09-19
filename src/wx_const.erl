@@ -8,3 +8,9 @@ id_any() ->
 
 black_pen() ->
   ?wxBLACK_PEN.
+
+transparent_brush() ->
+  ?wxTRANSPARENT_BRUSH.
+
+transparent_pen() ->
+  ?wxTRANSPARENT_PEN.

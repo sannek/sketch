@@ -56,7 +56,7 @@ defmodule Sketch.Runner do
     :ok
   end
 
-  defp do_draw(context, %{order: order, items: items}, %{brush: brush}) do
+  defp do_draw(context, %{order: order, items: items}, %{brush: brush, pen: pen}) do
     order
     |> Enum.reverse()
     |> Enum.each(fn id ->
@@ -64,6 +64,20 @@ defmodule Sketch.Runner do
         %{type: :fill, color: color} ->
           :wxBrush.setColour(brush, Sketch.Color.to_tuple(color))
           :wxGraphicsContext.setBrush(context, brush)
+
+        %{type: :no_fill} ->
+          :wxGraphicsContext.setBrush(context, :wx_const.transparent_brush())
+
+        %{type: :stroke, color: color} ->
+          :wxPen.setColour(pen, Sketch.Color.to_tuple(color))
+          :wxGraphicsContext.setPen(context, pen)
+
+        %{type: :stroke_weight, weight: weight} ->
+          :wxPen.setWidth(pen, weight)
+          :wxGraphicsContext.setPen(context, pen)
+
+        %{type: :no_stroke} ->
+          :wxGraphicsContext.setPen(context, :wx_const.transparent_pen())
 
         %{type: :translate, dx: dx, dy: dy} ->
           :wxGraphicsContext.translate(context, dx, dy)

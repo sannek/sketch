@@ -93,8 +93,8 @@ Sketch.new()
 - [x] No Stroke
 - [x] Stroke colour
 - [x] Stroke weight
+- [x] Alpha support
 - [ ] Stroke style (dashed lines etc.)
-- [ ] Alpha support
 
 ## Inspirations
 

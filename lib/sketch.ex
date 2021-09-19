@@ -15,6 +15,12 @@ defmodule Sketch do
           order: [integer()]
         }
 
+  @typedoc """
+  Color specified as `{r, g, b}` or `{r, g, b, a}`.
+  rgb values will be clamped between 0-255,
+  alpha expects a float between 0-1 (inclusive), where 0 is fully transparent and 1 is fully opaque.
+  """
+  @type color :: {integer, integer, integer} | {integer, integer, integer, number}
   @type coordinates :: {number, number}
   @type radians :: float
 
@@ -68,7 +74,7 @@ defmodule Sketch do
     new(background: {165, 122, 222})
     |> ellipse(%{origin: {0, 0}, width: 200, height: 100})
     |> translate({400, 300})
-    |> fill({0, 120, 255})
+    |> fill({0, 120, 255, 0.5})
     |> no_stroke()
     |> circle(%{origin: {0, 0}, diameter: 50})
     |> no_fill()
@@ -147,7 +153,8 @@ defmodule Sketch do
   @doc """
   Set the fill colour for any primitives following this function.
   """
-  def fill(sketch, {_r, _g, _b} = col) do
+  @spec fill(sketch(), color()) :: sketch()
+  def fill(sketch, col) do
     fill = %{type: :fill, color: Sketch.Color.new(col), id: next_id(sketch)}
     add_item(sketch, fill)
   end
@@ -155,6 +162,7 @@ defmodule Sketch do
   @doc """
   Removes fill from any subsequent primitives.
   """
+  @spec no_fill(sketch()) :: sketch()
   def no_fill(sketch) do
     fill = %{type: :no_fill, id: next_id(sketch)}
     add_item(sketch, fill)
@@ -163,7 +171,8 @@ defmodule Sketch do
   @doc """
   Sets the stroke colour for any subsequent primitives
   """
-  def stroke(sketch, {_r, _g, _b} = col) do
+  @spec stroke(sketch(), color()) :: sketch()
+  def stroke(sketch, col) do
     stroke = %{type: :stroke, color: Sketch.Color.new(col), id: next_id(sketch)}
     add_item(sketch, stroke)
   end
@@ -171,6 +180,7 @@ defmodule Sketch do
   @doc """
   Sets the stroke weight for any subsequent primitives
   """
+  @spec stroke_weight(sketch(), number()) :: sketch()
   def stroke_weight(sketch, weight) do
     stroke_weight = %{type: :stroke_weight, weight: weight, id: next_id(sketch)}
     add_item(sketch, stroke_weight)
@@ -179,6 +189,7 @@ defmodule Sketch do
   @doc """
   Removes the stroke from any subsequent primitives
   """
+  @spec no_stroke(sketch()) :: sketch()
   def no_stroke(sketch) do
     stroke = %{type: :no_stroke, id: next_id(sketch)}
     add_item(sketch, stroke)

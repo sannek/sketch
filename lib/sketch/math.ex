@@ -35,11 +35,13 @@ defmodule Sketch.Math do
 
   """
   @spec remap(number(), {number(), number()}, {number(), number()}) :: float()
-  def remap(value, {start1, stop1}, {start2, stop2}, opts \\ []) do
+  def remap(value, {start1, stop1} = _from, {start2, stop2} = _to, opts \\ []) do
     new_value = (value - start1) / (stop1 - start1) * (stop2 - start2) + start2
 
     if Keyword.get(opts, :constrain) do
       constrain(new_value, min(start2, stop2), max(start2, stop2)) / 1
+    else
+      new_value
     end
   end
 

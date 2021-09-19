@@ -23,6 +23,13 @@ Generated with `Examples.maurer_rose(6, 71) |> Sketch.save()`. Have a look at th
 
 ![Maurer Rose](maurer_rose.png)
 
+### Barnsley Fern
+
+Generated with `Examples.barnsley_fern(7000) |> Sketch.save()`. Have a look at the [Wikipedia article](https://en.wikipedia.org/wiki/Barnsley_fern) for more information about the Barnsley Fern
+
+This one would look even cooler with higher detail, but I hit the limit of what `Mogrify` could deal with. Optimizations to come after Spawnfest I'm afraid!
+
+![Barnsley Fern](barnsley_fern.png)
 
 ### Usage Examples
 
@@ -82,6 +89,7 @@ Sketch.new()
 - [x] Square
 - [x] Ellipse
 - [x] Circle
+- [x] Point
 - [ ] Triangle
 - [ ] Arc
 - [ ] Quad

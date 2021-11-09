@@ -7,6 +7,11 @@ defmodule Sketch.Render.Svg do
     |> IO.chardata_to_string()
   end
 
+  def render(sketch, filename, opts \\ []) do
+    contents = render_to_string(sketch, opts)
+    File.write!(filename, contents)
+  end
+
   defmodule Paint do
     defstruct fill: nil, stroke: nil, stroke_weight: 1
   end
@@ -46,16 +51,24 @@ defmodule Sketch.Render.Svg do
           item ->
             elem =
               Sketch.Render.render_svg(item)
+              |> stringify_attributes()
               |> transform_and_paint(transforms, paint)
 
             {[elem | nodes], transforms, paint}
         end
       end)
 
-    nodes |> IO.inspect(label: "nn")
+    nodes
+  end
+
+  defp stringify_attributes({elem, attrs, children}) do
+    attrs = Enum.map(attrs, fn {k, v} -> {k, to_string(v)} end)
+    {elem, attrs, children}
   end
 
   defp add_svg_elem(children, sketch) do
+    bg = {:rect, [x: 0, y: 0, width: sketch.width, height: sketch.height, fill: "white"], []}
+
     [
       {:svg,
        [
@@ -63,7 +76,7 @@ defmodule Sketch.Render.Svg do
          viewbox: "0 0 #{sketch.width} #{sketch.height}",
          width: sketch.width,
          height: sketch.height
-       ], children}
+       ], [bg | children]}
     ]
   end
 

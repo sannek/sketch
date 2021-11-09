@@ -73,7 +73,22 @@ defmodule Sketch do
 
   """
   def save(%Sketch{} = sketch, opts \\ []) do
-    Sketch.Render.Png.render(sketch, opts)
+    filename = filename(sketch, "png", Keyword.get(opts, :timestamp, true))
+    Sketch.Render.Png.render(sketch, filename, opts)
+  end
+
+  def save_svg(%Sketch{} = sketch, opts \\ []) do
+    filename = filename(sketch, "svg", Keyword.get(opts, :timestamp, true))
+    Sketch.Render.Svg.render(sketch, filename, opts)
+  end
+
+  defp filename(sketch, ext, true) do
+    timestamp = DateTime.utc_now() |> DateTime.to_unix(:millisecond)
+    "#{sketch.title}-#{timestamp}.#{ext}"
+  end
+
+  defp filename(sketch, ext, false) do
+    "#{sketch.title}.#{ext}"
   end
 
   def example do

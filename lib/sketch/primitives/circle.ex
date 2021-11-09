@@ -60,4 +60,8 @@ defimpl Sketch.Render, for: Sketch.Primitives.Circle do
     image
     |> Mogrify.custom("draw", "#{transform_opts} ellipse #{ellipse_opts} 0,360")
   end
+
+  def render_svg(%{origin: {x, y}, diameter: d}) do
+    {:circle, [cx: x, cy: y, r: d], []}
+  end
 end

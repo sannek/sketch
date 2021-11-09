@@ -54,4 +54,10 @@ defimpl Sketch.Render, for: Sketch.Primitives.Ellipse do
     image
     |> Mogrify.custom("draw", "#{transform_opts} ellipse #{ellipse_opts} 0,360")
   end
+
+  def render_svg(%{origin: {x, y}, width: w, height: h}) do
+    cx = x - w / 2
+    cy = y - h / 2
+    {:ellipse, [cx: cx, cy: cy, rx: w / 2, ry: h / 2], []}
+  end
 end

@@ -62,6 +62,7 @@ defimpl Sketch.Render, for: Sketch.Primitives.Circle do
   end
 
   def render_svg(%{origin: {x, y}, diameter: d}) do
-    {:circle, [cx: x, cy: y, r: d], []}
+    r = d / 2
+    {:circle, [cx: x, cy: y, r: r], []}
   end
 end

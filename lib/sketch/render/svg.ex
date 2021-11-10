@@ -67,7 +67,15 @@ defmodule Sketch.Render.Svg do
   end
 
   defp add_svg_elem(children, sketch) do
-    bg = {:rect, [x: 0, y: 0, width: sketch.width, height: sketch.height, fill: "white"], []}
+    bg =
+      {:rect,
+       [
+         x: 0,
+         y: 0,
+         width: sketch.width,
+         height: sketch.height,
+         fill: Sketch.Color.to_hex(sketch.background)
+       ], []}
 
     [
       {:svg,
@@ -93,7 +101,10 @@ defmodule Sketch.Render.Svg do
   defp transforms_attr(transforms), do: {:transform, Enum.join(transforms, " ")}
 
   defp paint_attrs(paint) do
-    [{:fill, paint.fill}, {:stroke, paint.stroke}, {:"stroke-width", paint.stroke_weight}]
-    |> Enum.reject(&(elem(&1, 1) == nil))
+    [
+      {:fill, paint.fill || "none"},
+      {:stroke, paint.stroke || "none"},
+      {:"stroke-width", paint.stroke_weight}
+    ]
   end
 end

@@ -1,6 +1,6 @@
 defmodule Sketch.Render.Png do
-  def render(sketch, opts) do
-    %Mogrify.Image{path: filename(sketch, Keyword.get(opts, :timestamp, true)), ext: "png"}
+  def render(sketch, filename, opts) do
+    %Mogrify.Image{path: filename, ext: "png"}
     |> Mogrify.custom("size", "#{sketch.width}x#{sketch.height}")
     |> Mogrify.canvas(Sketch.Color.to_hex(sketch.background))
     |> do_render(sketch)
@@ -56,14 +56,5 @@ defmodule Sketch.Render.Png do
       {:scale, {sx, sy}} -> "scale #{sx},#{sy}"
     end)
     |> Enum.join(" ")
-  end
-
-  defp filename(sketch, true) do
-    timestamp = DateTime.utc_now() |> DateTime.to_unix(:millisecond)
-    "#{sketch.title}-#{timestamp}.png"
-  end
-
-  defp filename(sketch, false) do
-    "#{sketch.title}.png"
   end
 end

@@ -36,4 +36,15 @@ defprotocol Sketch.Render do
   """
   @spec render_png(any, Mogrify.Image.t(), list) :: Mogrify.Image.t()
   def render_png(item, image, transforms)
+
+  @doc """
+    Called to render this item to SVG.
+    Must return an :xmerl.export_simple/2 compatible 'Content' parameter (e.g. a list of XML nodes).
+
+    Arguments
+    * `item` - whatever was added to the items in the sketch.
+    Usually a map or a struct containing the information needed to render it, like coordinates etc.
+  """
+  @spec render_svg(any) :: any
+  def render_svg(item)
 end

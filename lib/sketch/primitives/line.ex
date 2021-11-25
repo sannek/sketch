@@ -56,4 +56,9 @@ defimpl Sketch.Render, for: Sketch.Primitives.Line do
     image
     |> Mogrify.custom("draw", "#{transform_opts} line #{line_opts}")
   end
+
+  def render_svg(line) do
+    %{start: {x1, y1}, finish: {x2, y2}} = line
+    {:line, [x1: x1, y1: y1, x2: x2, y2: y2], []}
+  end
 end

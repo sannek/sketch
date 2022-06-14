@@ -47,8 +47,6 @@ Once you've built your final `Sketch`, you can call `Sketch.run(sketch)` to rend
 
 ### Known Issues
 
-There is currently some weirdness that the `:wx` window does not always paint on first load. It will generally work if you close and rerun the sketch - Unfortunately I've not been able to get to the bottom of that in the time limit.
-
 In addition, I unfortunately only had access to a MacBook this weekend. I am not aware of
 any reasons why things _shouldn't_ work as expected on other operating systems, but figured I'd mention it just in case...
 
@@ -156,4 +154,4 @@ Thinking beyond this hackathon, there are many things that could (should) probab
 - [ ] More graceful starting of the wx object when calling `Sketch.run/1`
 - [ ] Test coverage
 - [ ] Friendly errors
-- [ ] Figure out why the `wx` window sometimes doesn't get the render message?
+- [x] Figure out why the `wx` window sometimes doesn't get the render message?

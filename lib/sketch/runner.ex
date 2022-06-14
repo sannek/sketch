@@ -7,24 +7,25 @@ defmodule Sketch.Runner do
 
   ## :wx_object Calbacks
   def init(sketch) do
+    # start wx server
     wx = :wx.new()
 
-    frame =
-      :wxFrame.new(
-        wx,
-        :wx_const.id_any(),
-        sketch.title,
-        size: {sketch.width, sketch.height}
-      )
+    # block the wx server thread so we always get `handle_sync_event/3`
+    :wx.batch(fn ->
+      frame =
+        :wxFrame.new(
+          wx,
+          :wx_const.id_any(),
+          sketch.title,
+          size: {sketch.width, sketch.height}
+        )
 
-    :wxWindow.connect(frame, :close_window)
-    :wxWindow.connect(frame, :paint, [:callback])
+      :wxWindow.connect(frame, :close_window)
+      :wxWindow.connect(frame, :paint, [:callback])
 
-    :wxFrame.show(frame)
-
-    # dc = :wxWindowDC.new(frame)
-
-    {frame, %{frame: frame, sketch: sketch}}
+      :wxFrame.show(frame)
+      {frame, %{frame: frame, sketch: sketch}}
+    end)
   end
 
   ## Callbacks
@@ -33,8 +34,7 @@ defmodule Sketch.Runner do
           :sketch => atom | %{:background => any, optional(any) => any},
           optional(any) => any
         }) :: :ok
-  def handle_sync_event(request, _ref, %{frame: frame, sketch: sketch}) do
-    IO.inspect(request, label: "SYNC EVENT")
+  def handle_sync_event(_request, _ref, %{frame: frame, sketch: sketch}) do
     dc = :wxPaintDC.new(frame)
     context = :wxGraphicsContext.create(dc)
 

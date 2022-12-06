@@ -83,4 +83,9 @@ defimpl Sketch.Render, for: Sketch.Primitives.Point do
       _ -> false
     end)
   end
+
+  def render_svg(point) do
+    %{origin: {x, y}} = point
+    {:circle, [cx: x, cy: y, r: 1], []}
+  end
 end

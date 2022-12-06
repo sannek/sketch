@@ -51,4 +51,8 @@ defimpl Sketch.Render, for: Sketch.Primitives.Square do
     image
     |> Mogrify.custom("draw", "#{transform_opts} rectangle #{square_opts}")
   end
+
+  def render_svg(%{origin: {x, y}, size: s}) do
+    {:rect, [x: x, y: y, width: s, height: s], []}
+  end
 end

@@ -1,0 +1,18 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Get Dependencies",
+      "command": "mix deps.get"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "test": {
+      "name": "Run Tests",
+      "command": "mix test",
+      "runAtStart": true
+    }
+  }
+}

@@ -52,7 +52,7 @@ any reasons why things _shouldn't_ work as expected on other operating systems, 
 
 ```elixir
 Sketch.new()
-|> Sketch.set_fill({100, 100, 100})
+|> Sketch.fill({100, 100, 100})
 |> Sketch.square(%{origin: {0, 0}, size: 50})
 |> Sketch.run()
 ```
